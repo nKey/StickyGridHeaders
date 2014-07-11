@@ -130,14 +130,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter {
      */
     @Override
     public Object getItem(int position) throws ArrayIndexOutOfBoundsException {
-        Position adapterPosition = translatePosition(position);
-        if (adapterPosition.mPosition == POSITION_FILLER
-                || adapterPosition.mPosition == POSITION_HEADER) {
-            // Fake entry in view.
-            return null;
-        }
-
-        return mDelegate.getItem(adapterPosition.mPosition);
+        return mDelegate.getItem(position);
     }
 
     @Override
