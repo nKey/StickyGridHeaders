@@ -120,7 +120,12 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
         }
     }
 
-    private class HeaderData {
+    public HeadersMap getHeadersMapping()
+    {
+        return mHeaders;
+    }
+
+    public class HeaderData {
         private int mCount;
 
         private int mRefPosition;

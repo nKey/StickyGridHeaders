@@ -38,6 +38,7 @@ import android.widget.ListAdapter;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapterWrapper.HeaderFillerView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -259,6 +260,69 @@ public class StickyGridHeadersGridView extends GridView implements OnScrollListe
                         mAdapter.unFilledSpacesInHeaderGroup((int) mAdapter.getHeaderId(contentViewPosition));
         }
         return contentViewPosition;
+    }
+
+    public View getContentChildAt(int index)
+    {
+        int count = getChildCount();
+        int firstVisibleViewPosition = getFirstVisiblePosition();
+        int contentItemIndex = -1;
+        int i;
+        for (i = 0; i < count && contentItemIndex < index; i++)
+        {
+            switch (mAdapter.getItemViewType(firstVisibleViewPosition + i))
+            {
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_HEADER:
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_FILLER:
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_HEADER_FILLER:
+                    /* not a content item */
+                    break;
+
+                default:
+                    contentItemIndex++;
+            }
+        }
+        return getChildAt(i - 1);
+    }
+
+    public LinkedList<View> getVisibleContentViews()
+    {
+        LinkedList<View> result = new LinkedList<View>();
+
+        int count = getChildCount();
+        int firstVisibleViewPosition = getFirstVisiblePosition();
+        for (int i = 0; i < count; i++)
+        {
+            switch (mAdapter.getItemViewType(firstVisibleViewPosition + i))
+            {
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_HEADER:
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_FILLER:
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_HEADER_FILLER:
+                    break;
+
+                default:
+                    result.add(getChildAt(i));
+            }
+        }
+
+        return result;
+    }
+
+    public int getContentChildCount()
+    {
+        int count = getChildCount();
+        int firstVisibleViewPosition = getFirstVisiblePosition();
+        for (int i = 0; i < count; i++)
+        {
+            switch (mAdapter.getItemViewType(firstVisibleViewPosition + i))
+            {
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_HEADER:
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_FILLER:
+                case StickyGridHeadersBaseAdapterWrapper.VIEW_TYPE_HEADER_FILLER:
+                    count--;
+            }
+        }
+        return count;
     }
 
     @Override
