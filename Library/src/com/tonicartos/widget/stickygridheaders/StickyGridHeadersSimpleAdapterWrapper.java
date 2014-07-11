@@ -21,10 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * Adapter wrapper to insert extra views and otherwise hack around GridView to
@@ -36,7 +34,7 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
         StickyGridHeadersBaseAdapter {
     private StickyGridHeadersSimpleAdapter mDelegate;
 
-    private HeaderData[] mHeaders;
+    private HeadersMap mHeaders;
 
     public StickyGridHeadersSimpleAdapterWrapper(StickyGridHeadersSimpleAdapter adapter) {
         mDelegate = adapter;
@@ -51,12 +49,12 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
 
     @Override
     public int getCountForHeader(int position) {
-        return mHeaders[position].getCount();
+        return mHeaders.atPosition(position).getCount();
     }
 
     @Override
     public View getHeaderView(int position, View convertView, ViewGroup parent) {
-        return mDelegate.getHeaderView(mHeaders[position].getRefPosition(), convertView, parent);
+        return mDelegate.getHeaderView(mHeaders.atPosition(position).getRefPosition(), convertView, parent);
     }
 
     @Override
@@ -76,7 +74,7 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
 
     @Override
     public int getNumHeaders() {
-        return mHeaders.length;
+        return mHeaders.size();
     }
 
     @Override
@@ -90,22 +88,22 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
         return mDelegate.getViewTypeCount();
     }
 
-    protected HeaderData[] generateHeaderList(StickyGridHeadersSimpleAdapter adapter) {
-        Map<Long, HeaderData> mapping = new HashMap<Long, HeaderData>();
-        List<HeaderData> headers = new ArrayList<HeaderData>();
+    protected HeadersMap generateHeaderList(StickyGridHeadersSimpleAdapter adapter) {
+        HeadersMap mapping = new HeadersMap();
 
-        for (int i = 0; i < adapter.getCount(); i++) {
+        for (int i = 0; i < adapter.getCount(); i++)
+        {
             long headerId = adapter.getHeaderId(i);
             HeaderData headerData = mapping.get(headerId);
-            if (headerData == null) {
+            if (headerData == null)
+            {
                 headerData = new HeaderData(i);
-                headers.add(headerData);
+                mapping.put(headerId, headerData);
             }
             headerData.incrementCount();
-            mapping.put(headerId, headerData);
         }
 
-        return headers.toArray(new HeaderData[headers.size()]);
+        return mapping;
     }
 
     private final class DataSetObserverExtension extends DataSetObserver {
@@ -142,6 +140,23 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
 
         public void incrementCount() {
             mCount++;
+        }
+    }
+
+    public class HeadersMap extends LinkedHashMap<Long, HeaderData>
+    {
+        public HeadersMap()
+        {
+            super(0, 0.75f, false);
+        }
+
+        public HeaderData atPosition(int position)
+        {
+            Iterator<Entry<Long, HeaderData>> iterator = entrySet().iterator();
+            int i = 0;
+            HeaderData result = null;
+            while (i++ <= position && iterator.hasNext()) result = iterator.next().getValue();
+            return result;
         }
     }
 }
