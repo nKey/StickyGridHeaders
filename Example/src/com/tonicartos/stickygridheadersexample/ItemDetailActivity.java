@@ -18,8 +18,8 @@ package com.tonicartos.stickygridheadersexample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import androidx.core.app.NavUtils;
+import androidx.appcompat.app.ActionBarActivity;
 import android.view.MenuItem;
 
 /**

@@ -18,7 +18,7 @@ package com.tonicartos.stickygridheadersexample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import androidx.appcompat.app.ActionBarActivity;
 
 /**
  * An activity representing a list of Items. This activity has different

@@ -1,17 +1,7 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-    }
-}
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1"
+    compileSdkVersion 28
 
     sourceSets {
         main {
@@ -24,13 +14,17 @@ android {
             assets.srcDirs = ['assets']
         }
 
-        instrumentTest.setRoot('tests')
+        androidTest.setRoot('tests')
     }
 
     lintOptions {
         //	Don't abort if Lint finds an error, otherwise the Jenkins build
         //	will be marked as failed, and Jenkins won't analyse the Lint output
         abortOnError false
+    }
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 28
     }
 }
 
